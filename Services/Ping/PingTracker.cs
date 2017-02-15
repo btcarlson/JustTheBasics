@@ -15,6 +15,11 @@ namespace JustTheBasics
         private List<int> _pingHistory;
         private Logger _logger = LogManager.GetLogger("PingTracker");
 
+        public PingTracker(DiscordSocketClient client)
+        {
+            
+        }
+
         public Task PreDisable(DiscordSocketClient client)
         {
             client.LatencyUpdated -= pingHandler;
