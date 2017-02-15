@@ -41,7 +41,7 @@ namespace JustTheBasics
             });
 
             builder.AddField(x => {
-                x.IsInline = false;
+                x.IsInline = true;
                 x.Name = "Min";
                 x.Value = $"{stats.Min} ms";
             });
@@ -52,7 +52,7 @@ namespace JustTheBasics
                 x.Value = $"{stats.Max} ms";
             });
 
-            await Context.ReplyAsync(builder);
+            await Context.ReplyAsync(builder.Build());
         }
 
         [Name("PingTracker Toggle"), Command("pingtracker")]
