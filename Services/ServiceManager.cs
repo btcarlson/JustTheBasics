@@ -1,5 +1,6 @@
 using Discord.Commands;
 using Discord.WebSocket;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -13,6 +14,7 @@ namespace JustTheBasics
     {
         private List<IService> _registeredServices = new List<IService>();
         private DiscordSocketClient _client;
+        private Logger _logger = LogManager.GetLogger("ServiceManager");
 
         public ServiceManager(DiscordSocketClient client)
         {
@@ -35,22 +37,13 @@ namespace JustTheBasics
                 service.IsEnabled = true;
 
                 _registeredServices.Add(service);
+
+                _logger.Info($"Registered and Enabled Service {s.Name}");
             }
         }
 
         public T GetService<T>() where T : class, IService
             => _registeredServices.FirstOrDefault(x => x is T) as T;
-
-        public async Task<bool> TryDisable<T>() where T : class, IService
-        {
-            var service = GetService<T>();
-
-            if (!service.IsEnabled)
-                return false;
-
-            await service.PreDisable(_client);
-            return true;
-        }
 
         public async Task<bool> TryEnable<T>() where T : class, IService
         {
@@ -60,6 +53,19 @@ namespace JustTheBasics
                 return false;
 
             await service.PreEnable(_client);
+            _logger.Info($"Enabled Service {typeof(T).Name}");
+            return true;
+        }
+
+        public async Task<bool> TryDisable<T>() where T : class, IService
+        {
+            var service = GetService<T>();
+
+            if (!service.IsEnabled)
+                return false;
+
+            await service.PreDisable(_client);
+            _logger.Info($"Disabled Service {typeof(T).Name}");
             return true;
         }
     }

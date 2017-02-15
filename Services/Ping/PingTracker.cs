@@ -1,5 +1,6 @@
 using Discord.Commands;
 using Discord.WebSocket;
+using NLog;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ namespace JustTheBasics
         public bool IsEnabled { get; set; }
 
         private List<int> _pingHistory;
+        private Logger _logger = LogManager.GetLogger("PingTracker");
 
         public Task PreDisable(DiscordSocketClient client)
         {
@@ -41,8 +43,11 @@ namespace JustTheBasics
 
         public void ResetTracker()
         {
-            if (IsEnabled)
-                _pingHistory = new List<int>();
+            if (!IsEnabled)
+                return;
+
+            _pingHistory = new List<int>();
+            _logger.Info("Ping Tracker Reset");
         }
 
         private Task pingHandler(int old, int current)

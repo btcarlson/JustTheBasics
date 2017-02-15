@@ -1,5 +1,6 @@
 using Discord.Commands;
 using Discord.WebSocket;
+using NLog;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -12,6 +13,7 @@ namespace JustTheBasics
         private DiscordSocketClient _client;
         private CommandService _commandService;
         private IDependencyMap _dependencyMap;
+        private Logger _logger = LogManager.GetLogger("Commands");
         private string _prefix;
         private ulong[] _ownerIds;
 
@@ -63,8 +65,11 @@ namespace JustTheBasics
 
             var result = await _commandService.ExecuteAsync(context, argPos, _dependencyMap, MultiMatchHandling.Best);
 
+            _logger.Info($"Command ran by {context.User} in {context.Channel.Name} - {context.Message.Content}");
+
             if (result.IsSuccess)
                 return;
+
 
             string response = null;
 
@@ -81,6 +86,7 @@ namespace JustTheBasics
                     break;
                 case ExecuteResult executeResult:
                     response = $":warning: Your command failed to execute. If this persists, contact the Bot Developer.\n`{executeResult.Exception.Message}`";
+                    _logger.Error(executeResult.Exception);
                     break;
             }
 
@@ -90,6 +96,7 @@ namespace JustTheBasics
 
         public void StartListening()
         {
+            _logger.Info("Now listening for commands");
             _isReady = true;
         }
 
