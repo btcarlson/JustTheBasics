@@ -18,7 +18,7 @@ namespace JustTheBasics
         {
             if (!File.Exists("config.json"))
             {
-                File.WriteAllText("config.json", JsonConvert.SerializeObject(new CoreConfig()));
+                File.WriteAllText("config.json", JsonConvert.SerializeObject(new CoreConfig(), Formatting.Indented));
                 throw new FileNotFoundException("Config File Not Found - Generating a template at 'config.json'");
             }
 
