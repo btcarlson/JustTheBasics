@@ -1,0 +1,17 @@
+using Discord;
+using Discord.Commands;
+using Discord.WebSocket;
+using System;
+using System.Threading.Tasks;
+
+namespace JustTheBasics
+{
+    public static class Responses
+    {
+        public static async Task ReplyAsync(this ICommandContext context, string message, bool mention = true)
+            => await context.Channel.SendMessageAsync($"{(mention ? context.User.Mention + ", " : "")}{message}");
+
+        public static async Task ReplyAsync(this ICommandContext context, EmbedBuilder embedBuilder)
+            => await context.Channel.SendMessageAsync(null, embed: embedBuilder.Build());
+    }
+}
