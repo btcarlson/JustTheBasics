@@ -53,6 +53,7 @@ namespace JustTheBasics
                 return false;
 
             await service.PreEnable(_client);
+            service.IsEnabled = true;
             _logger.Info($"Enabled Service {typeof(T).Name}");
             return true;
         }
@@ -65,6 +66,7 @@ namespace JustTheBasics
                 return false;
 
             await service.PreDisable(_client);
+            service.IsEnabled = false;
             _logger.Info($"Disabled Service {typeof(T).Name}");
             return true;
         }
