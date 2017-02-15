@@ -12,4 +12,11 @@
     <PackageReference Include="System.ValueTuple" Version="*" />
   </ItemGroup>
 
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DefineConstants>$(DefineConstants);BETA;TRACE;__DEMO_EXPERIMENTAL__;__DEMO__</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DefineConstants>$(DefineConstants);OPTIMIZE;__DEMO_EXPERIMENTAL__;__DEMO__</DefineConstants>
+  </PropertyGroup>
+
 </Project>
