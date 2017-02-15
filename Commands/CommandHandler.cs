@@ -88,7 +88,7 @@ namespace JustTheBasics
                 await context.ReplyAsync(response);
         }
 
-        public void Enable()
+        public void StartListening()
         {
             _isReady = true;
         }
