@@ -9,6 +9,7 @@
     <PackageReference Include="Discord.Net.Commands" Version="1.0.0-*" />
     <PackageReference Include="Discord.Net.WebSocket" Version="1.0.0-*" />
     <PackageReference Include="NLog" Version="5.0.0-beta05" />
+    <PackageReference Include="System.ValueTuple" Version="*" />
   </ItemGroup>
 
 </Project>
