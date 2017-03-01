@@ -9,7 +9,7 @@ namespace JustTheBasics
     public class PingCommand : ModuleBase<SocketCommandContext>
     {
         private PingTracker _pingTracker;
-        private ServiceManager _serviceManager;
+        private ServiceDependencyMap _serviceManager;
 
         [Name("Ping"), Command("ping")]
         public async Task Ping()
@@ -77,9 +77,9 @@ namespace JustTheBasics
                 await Context.ReplyAsync($"The Ping Tracker has been turned {action}");
         }
 
-        public PingCommand(IDependencyMap depMap)
+        public PingCommand(ServiceDependencyMap depMap)
         {
-            _serviceManager = depMap.Get<ServiceManager>();
+            _serviceManager = depMap;
             _pingTracker = _serviceManager.GetService<PingTracker>();
         }
 

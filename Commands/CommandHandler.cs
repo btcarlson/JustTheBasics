@@ -12,7 +12,7 @@ namespace JustTheBasics
     {
         private DiscordSocketClient _client;
         private CommandService _commandService;
-        private IDependencyMap _dependencyMap;
+        private ServiceDependencyMap _dependencyMap;
         private Logger _logger = LogManager.GetLogger("Commands");
         private string _prefix;
         private ulong[] _ownerIds;
@@ -21,7 +21,7 @@ namespace JustTheBasics
 
         public CommandService CommandService => _commandService;
 
-        public CommandHandler(DiscordSocketClient client, string prefix, ulong[] ownerIds, IDependencyMap dependencyMap)
+        public CommandHandler(DiscordSocketClient client, string prefix, ulong[] ownerIds, ServiceDependencyMap dependencyMap)
         {
             _client = client;
             _prefix = prefix;

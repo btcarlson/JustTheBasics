@@ -10,15 +10,16 @@ using System.Threading.Tasks;
 
 namespace JustTheBasics
 {
-    public class ServiceManager
+    public class ServiceDependencyMap : DependencyMap
     {
         private List<ServiceBase> _registeredServices = new List<ServiceBase>();
         private DiscordSocketClient _client;
         private Logger _logger = LogManager.GetLogger("ServiceManager");
 
-        public ServiceManager(DiscordSocketClient client)
+        public ServiceDependencyMap(DiscordSocketClient client)
         {
             _client = client;
+            ServiceBase.Client = client;
 
             var allServices = Assembly.GetEntryAssembly().ExportedTypes
                 .Where(x => x.GetTypeInfo().BaseType == typeof(ServiceBase));

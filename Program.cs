@@ -3,6 +3,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using NLog;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace JustTheBasics
@@ -22,14 +23,11 @@ namespace JustTheBasics
             var client = new DiscordSocketClient();
             client.Log += logging;
 
-            var dependencyMap = new DependencyMap();
-
             _coreLogger.Info("Initializing Service Manager");
-            var serviceManager = new ServiceManager(client);
-            dependencyMap.Add(serviceManager);
+            var serviceDepMap = new ServiceDependencyMap(client);
 
             _coreLogger.Info("Initializing Command Handler");
-            var cmdHandler = new CommandHandler(client, config.Prefix, config.OwnerIds, dependencyMap);
+            var cmdHandler = new CommandHandler(client, config.Prefix, config.OwnerIds, serviceDepMap);
             await cmdHandler.AddAllCommands();
 
             _coreLogger.Info("Beginning Login and Connection to Discord");
