@@ -34,7 +34,7 @@ namespace JustTheBasics
 
             _coreLogger.Info("Beginning Login and Connection to Discord");
             await client.LoginAsync(TokenType.Bot, config.Token);
-            await client.ConnectAsync();
+            await client.StartAsync();
 
             cmdHandler.StartListening();
 
