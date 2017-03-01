@@ -12,7 +12,7 @@ namespace JustTheBasics
 {
     public class ServiceManager
     {
-        private List<IService> _registeredServices = new List<IService>();
+        private List<ServiceBase> _registeredServices = new List<ServiceBase>();
         private DiscordSocketClient _client;
         private Logger _logger = LogManager.GetLogger("ServiceManager");
 
@@ -21,20 +21,15 @@ namespace JustTheBasics
             _client = client;
 
             var allServices = Assembly.GetEntryAssembly().ExportedTypes
-                .Where(x => x.GetInterfaces().Contains(typeof(IService)));
+                .Where(x => x.GetTypeInfo().BaseType == typeof(ServiceBase));
 
             foreach (var s in allServices)
             {
-                var constructor = s.GetConstructors().FirstOrDefault(x 
-                    => x.GetParameters().Count() == 1 && x.GetParameters().First().ParameterType == typeof(DiscordSocketClient));
+                var constructor = s.GetConstructors().FirstOrDefault(c => c.GetParameters().Count() == 0);
 
-                if (constructor == null)
-                    throw new InvalidOperationException("IServices must have a single ctor that accepts only a DiscordSocketClient as a parameter");
+                var service = (ServiceBase)constructor.Invoke(new object[0]);
 
-                var service = (IService)constructor.Invoke(new object[1] { client });
-
-                service.PreEnable(_client).GetAwaiter().GetResult();
-                service.IsEnabled = true;
+                service.TryEnable().GetAwaiter().GetResult();
 
                 _registeredServices.Add(service);
 
@@ -42,33 +37,13 @@ namespace JustTheBasics
             }
         }
 
-        public T GetService<T>() where T : class, IService
-            => _registeredServices.FirstOrDefault(x => x is T) as T;
+        public TService GetService<TService>() where TService : ServiceBase
+            => _registeredServices.FirstOrDefault(x => x is TService) as TService;
 
-        public async Task<bool> TryEnable<T>() where T : class, IService
-        {
-            var service = GetService<T>();
+        public async Task<bool> TryEnable<TService>() where TService : ServiceBase
+            => await (_registeredServices.FirstOrDefault(x => x is TService) as TService).TryEnable();
 
-            if (service.IsEnabled)
-                return false;
-
-            await service.PreEnable(_client);
-            service.IsEnabled = true;
-            _logger.Info($"Enabled Service {typeof(T).Name}");
-            return true;
-        }
-
-        public async Task<bool> TryDisable<T>() where T : class, IService
-        {
-            var service = GetService<T>();
-
-            if (!service.IsEnabled)
-                return false;
-
-            await service.PreDisable(_client);
-            service.IsEnabled = false;
-            _logger.Info($"Disabled Service {typeof(T).Name}");
-            return true;
-        }
+        public async Task<bool> TryDisable<TService>() where TService : ServiceBase
+            => await (_registeredServices.FirstOrDefault(x => x is TService) as TService).TryDisable();
     }
 }

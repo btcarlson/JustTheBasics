@@ -8,30 +8,23 @@ using System.Collections.Generic;
 
 namespace JustTheBasics
 {
-    public class PingTracker : IService
+    public class PingTracker : ServiceBase
     {
-        public bool IsEnabled { get; set; }
-
         private List<int> _pingHistory;
         private Logger _logger = LogManager.GetLogger("PingTracker");
 
-        public PingTracker(DiscordSocketClient client)
+        protected override Task PreDisable()
         {
-            
-        }
-
-        public Task PreDisable(DiscordSocketClient client)
-        {
-            client.LatencyUpdated -= pingHandler;
+            Client.LatencyUpdated -= pingHandler;
             _pingHistory = null;
 
             return Task.CompletedTask;
         }
 
-        public Task PreEnable(DiscordSocketClient client)
+        protected override Task PreEnable()
         {
             _pingHistory = new List<int>();
-            client.LatencyUpdated += pingHandler;
+            Client.LatencyUpdated += pingHandler;
 
             return Task.CompletedTask;
         }
