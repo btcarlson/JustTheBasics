@@ -39,12 +39,12 @@ namespace JustTheBasics
         }
 
         public TService GetService<TService>() where TService : ServiceBase
-            => _registeredServices.FirstOrDefault(x => x is TService) as TService;
+            => _registeredServices.FirstOrDefault(x => x.GetType() == typeof(TService)) as TService;
 
         public async Task<bool> TryEnable<TService>() where TService : ServiceBase
-            => await (_registeredServices.FirstOrDefault(x => x is TService) as TService).TryEnable();
+            => await (GetService<TService>()).TryEnable();
 
         public async Task<bool> TryDisable<TService>() where TService : ServiceBase
-            => await (_registeredServices.FirstOrDefault(x => x is TService) as TService).TryDisable();
+            => await (GetService<TService>()).TryDisable();
     }
 }
