@@ -35,6 +35,8 @@ namespace JustTheBasics
                 CaseSensitiveCommands = false
             });
 
+            ExtendedModuleBase.SetDependencyMap(dependencyMap);
+
             _client.MessageReceived += handler;
         }
 

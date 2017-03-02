@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace JustTheBasics
 {
-    public class PingCommand : ModuleBase<SocketCommandContext>
+    public class PingCommand : ExtendedModuleBase
     {
         private PingTracker _pingTracker;
-        private ServiceDependencyMap _serviceManager;
 
         [Name("Ping"), Command("ping")]
         public async Task Ping()
@@ -62,10 +61,10 @@ namespace JustTheBasics
             switch (onOff)
             {
                 case OnOff.On:
-                    success = await _serviceManager.TryEnable<PingTracker>();
+                    success = await DepMap.TryEnable<PingTracker>();
                     break;
                 case OnOff.Off:
-                    success = await _serviceManager.TryDisable<PingTracker>();
+                    success = await DepMap.TryDisable<PingTracker>();
                     break;
             }
 
@@ -77,10 +76,9 @@ namespace JustTheBasics
                 await Context.ReplyAsync($"The Ping Tracker has been turned {action}");
         }
 
-        public PingCommand(ServiceDependencyMap depMap)
+        public PingCommand()
         {
-            _serviceManager = depMap;
-            _pingTracker = _serviceManager.GetService<PingTracker>();
+            _pingTracker = DepMap.GetService<PingTracker>();
         }
 
         public enum OnOff
